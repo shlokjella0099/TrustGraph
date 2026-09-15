@@ -1,0 +1,33 @@
+# Node
+node_modules/
+dist/
+
+# Java
+target/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment variables
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+
+# Mac
+.DS_Store
+
+# Logs
+*.log
+
+# Uploaded documents
+uploads/
+
+# Secrets
+*.pem
+*.key
