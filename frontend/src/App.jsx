@@ -291,6 +291,18 @@ function App() {
 >
   {verifyingId === doc.id ? 'Verifying...' : 'Verify'}
 </button>
+<button
+  onClick={() =>
+    window.open(
+      `http://localhost:8080/uploads/${encodeURIComponent(
+        doc.filename
+      )}`,
+      '_blank'
+    )
+  }
+>
+  Open Document
+</button>
 
                   {doc.status === 'VERIFIED' && (
 
