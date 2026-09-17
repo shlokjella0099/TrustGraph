@@ -8,6 +8,7 @@ function App() {
   const [document, setDocument] = useState(null)
   const [documents, setDocuments] = useState([])
   const [verifyingId, setVerifyingId] = useState(null)
+  const [uploading, setUploading] = useState(false)
 
   useEffect(() => {
     axios
@@ -44,6 +45,9 @@ function App() {
       setDocuments((prev) => [...prev, response.data])
     } catch (error) {
       console.error('Upload failed:', error)
+    }
+    finally {
+    setUploading(false)
     }
   }
 
@@ -115,11 +119,12 @@ function App() {
             />
 
             <button
-              className="upload-button"
-              onClick={handleUploadClick}
-            >
-              Upload Document
-            </button>
+            className="upload-button"
+            onClick={handleUploadClick}
+              disabled={uploading}
+             >
+             {uploading ? 'Uploading...' : 'Upload Document'}
+             </button>
 
             {document && (
               <div className="uploaded-document">
