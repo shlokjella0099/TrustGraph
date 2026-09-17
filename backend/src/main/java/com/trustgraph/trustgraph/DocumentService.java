@@ -22,4 +22,7 @@ public class DocumentService {
 public Document getDocument(Long id) {
     return documentRepository.findById(id).orElse(null);
 }
+public void deleteDocument(Long id) {
+    documentRepository.deleteById(id);
+}
 }

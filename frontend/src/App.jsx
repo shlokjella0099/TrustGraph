@@ -292,6 +292,31 @@ function App() {
   {verifyingId === doc.id ? 'Verifying...' : 'Verify'}
 </button>
 <button
+  onClick={async () => {
+  const confirmed = window.confirm(
+    `Are you sure you want to delete "${doc.filename}"?`
+  )
+
+  if (!confirmed) {
+    return
+  }
+
+  try {
+    await axios.delete(
+      `http://localhost:8080/api/documents/${doc.id}`
+    )
+
+    setDocuments((prev) =>
+      prev.filter((item) => item.id !== doc.id)
+    )
+  } catch (error) {
+    console.error('Delete failed:', error)
+  }
+}}
+>
+  Delete
+</button>
+<button
   onClick={() =>
     window.open(
       `http://localhost:8080/uploads/${encodeURIComponent(
