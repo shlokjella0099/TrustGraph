@@ -232,13 +232,29 @@ nav a:hover {
 }
 
 .document-item {
-  padding: 18px;
+  padding: 22px;
   border: 1px solid #292e38;
-  border-radius: 10px;
+  border-radius: 12px;
   background: #11141b;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 9px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.document-item:hover {
+  border-color: #414856;
+  transform: translateY(-2px);
+}
+
+.document-item strong {
+  font-size: 16px;
+}
+
+.document-item span {
+  color: #858c99;
+  font-size: 12px;
+  word-break: break-all;
 }
 
 .document-item strong {
