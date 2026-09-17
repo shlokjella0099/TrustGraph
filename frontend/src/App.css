@@ -250,3 +250,22 @@ nav a:hover {
   font-size: 12px;
   word-break: break-all;
 }
+.document-item span:last-of-type {
+  font-weight: 600;
+}
+
+.document-item button {
+  margin-top: 10px;
+  width: fit-content;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0b0d12;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.document-item button:hover {
+  opacity: 0.85;
+}

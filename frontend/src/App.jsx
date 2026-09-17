@@ -131,6 +131,42 @@ useEffect(() => {
         <strong>{doc.filename}</strong>
         <span>{doc.fileType}</span>
         <span>SHA-256: {doc.sha256Hash}</span>
+       <span
+       className={
+       doc.status === 'VERIFIED'
+       ? 'status-verified'
+       : doc.status === 'MODIFIED'
+       ? 'status-modified'
+       : 'status-uploaded'
+  }
+>
+  Status: {doc.status || 'UPLOADED'}
+</span>
+       <button
+       onClick={async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/documents/${doc.id}/verify`
+      )
+
+      console.log(response.data)
+
+      const updated = await axios.get(
+        `http://localhost:8080/api/documents/${doc.id}`
+      )
+
+      setDocuments((prev) =>
+        prev.map((item) =>
+          item.id === doc.id ? updated.data : item
+        )
+      )
+    } catch (error) {
+      console.error('Verification failed:', error)
+    }
+    }}
+>
+  Verify
+</button>
       </div>
     ))}
   </div>
