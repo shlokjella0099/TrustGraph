@@ -9,7 +9,7 @@ function App() {
   const [documents, setDocuments] = useState([])
   const [verifyingId, setVerifyingId] = useState(null)
   const [uploading, setUploading] = useState(false)
-
+  const [uploadError, setUploadError] = useState('')
   useEffect(() => {
     axios
       .get('http://localhost:8080/api/documents')
@@ -34,7 +34,7 @@ function App() {
 
     const formData = new FormData()
     formData.append('file', file)
-
+    setUploadError('')
     try {
       const response = await axios.post(
         'http://localhost:8080/api/documents/upload',
@@ -43,8 +43,9 @@ function App() {
 
       setDocument(response.data)
       setDocuments((prev) => [...prev, response.data])
-    } catch (error) {
-      console.error('Upload failed:', error)
+    }catch (error) {
+    console.error('Upload failed:', error)
+    setUploadError('Upload failed. Please try again.')
     }
     finally {
     setUploading(false)
@@ -125,6 +126,11 @@ function App() {
              >
              {uploading ? 'Uploading...' : 'Upload Document'}
              </button>
+             {uploadError && (
+             <div className="upload-error">
+             {uploadError}
+             </div>
+             )}
 
             {document && (
               <div className="uploaded-document">
