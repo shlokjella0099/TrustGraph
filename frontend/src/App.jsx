@@ -7,6 +7,7 @@ function App() {
 
   const [document, setDocument] = useState(null)
   const [documents, setDocuments] = useState([])
+  const [verifyingId, setVerifyingId] = useState(null)
 
   useEffect(() => {
     axios
@@ -47,29 +48,32 @@ function App() {
   }
 
   const handleVerify = async (id) => {
-    try {
-      await axios.get(
-        `http://localhost:8080/api/documents/${id}/verify`
-      )
+  try {
+    setVerifyingId(id)
 
-      const response = await axios.get(
-        `http://localhost:8080/api/documents/${id}`
-      )
+    await axios.get(
+      `http://localhost:8080/api/documents/${id}/verify`
+    )
 
-      setDocuments((prev) =>
-        prev.map((item) =>
-          item.id === id ? response.data : item
-        )
-      )
+    const response = await axios.get(
+      `http://localhost:8080/api/documents/${id}`
+    )
 
-      if (document && document.id === id) {
-        setDocument(response.data)
-      }
-    } catch (error) {
-      console.error('Verification failed:', error)
+    setDocuments((prev) =>
+      prev.map((item) =>
+        item.id === id ? response.data : item
+      )
+    )
+
+    if (document && document.id === id) {
+      setDocument(response.data)
     }
+  } catch (error) {
+    console.error('Verification failed:', error)
+  } finally {
+    setVerifyingId(null)
   }
-
+}
   return (
     <div className="app">
 
@@ -267,10 +271,11 @@ function App() {
                   </span>
 
                   <button
-                    onClick={() => handleVerify(doc.id)}
-                  >
-                    Verify
-                  </button>
+  onClick={() => handleVerify(doc.id)}
+  disabled={verifyingId === doc.id}
+>
+  {verifyingId === doc.id ? 'Verifying...' : 'Verify'}
+</button>
 
                   {doc.status === 'VERIFIED' && (
 
