@@ -17,6 +17,15 @@ public class Document {
     private Long fileSize;
     private String sha256Hash;
     private String filePath;
+    private String status;
+
+    public String getStatus() {
+    return status;
+    }
+
+    public void setStatus(String status) {
+    this.status = status;
+    }
 
     public Long getId() {
         return id;
