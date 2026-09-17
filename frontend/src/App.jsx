@@ -4,19 +4,20 @@ import axios from 'axios'
 
 function App() {
   const fileInput = useRef(null)
+
   const [document, setDocument] = useState(null)
   const [documents, setDocuments] = useState([])
 
-useEffect(() => {
-  axios
-    .get('http://localhost:8080/api/documents')
-    .then((response) => {
-      setDocuments(response.data)
-    })
-    .catch((error) => {
-      console.error('Failed to load documents:', error)
-    })
-}, [])
+  useEffect(() => {
+    axios
+      .get('http://localhost:8080/api/documents')
+      .then((response) => {
+        setDocuments(response.data)
+      })
+      .catch((error) => {
+        console.error('Failed to load documents:', error)
+      })
+  }, [])
 
   const handleUploadClick = () => {
     fileInput.current.click()
@@ -33,20 +34,45 @@ useEffect(() => {
     formData.append('file', file)
 
     try {
-  const response = await axios.post(
-    'http://localhost:8080/api/documents/upload',
-    formData
-  )
+      const response = await axios.post(
+        'http://localhost:8080/api/documents/upload',
+        formData
+      )
 
-  setDocument(response.data)
-  setDocuments((prev) => [...prev, response.data])
-  } catch (error) {
-  console.error('Upload failed:', error)
+      setDocument(response.data)
+      setDocuments((prev) => [...prev, response.data])
+    } catch (error) {
+      console.error('Upload failed:', error)
+    }
   }
+
+  const handleVerify = async (id) => {
+    try {
+      await axios.get(
+        `http://localhost:8080/api/documents/${id}/verify`
+      )
+
+      const response = await axios.get(
+        `http://localhost:8080/api/documents/${id}`
+      )
+
+      setDocuments((prev) =>
+        prev.map((item) =>
+          item.id === id ? response.data : item
+        )
+      )
+
+      if (document && document.id === id) {
+        setDocument(response.data)
+      }
+    } catch (error) {
+      console.error('Verification failed:', error)
+    }
   }
 
   return (
     <div className="app">
+
       <header className="navbar">
         <div className="logo">TrustGraph</div>
 
@@ -58,11 +84,18 @@ useEffect(() => {
       </header>
 
       <main className="dashboard">
-        <section className="hero">
-          <div>
-            <p className="tag">DOCUMENT INTEGRITY PLATFORM</p>
 
-            <h1>Know what you can trust.</h1>
+        <section className="hero">
+
+          <div>
+
+            <p className="tag">
+              DOCUMENT INTEGRITY PLATFORM
+            </p>
+
+            <h1>
+              Know what you can trust.
+            </h1>
 
             <p className="description">
               Analyze documents for integrity, tampering evidence,
@@ -86,93 +119,187 @@ useEffect(() => {
 
             {document && (
               <div className="uploaded-document">
-                <strong>{document.filename}</strong>
-                <span>SHA-256: {document.sha256Hash}</span>
+
+                <strong>
+                  {document.filename}
+                </strong>
+
+                <span>
+                  SHA-256: {document.sha256Hash}
+                </span>
+
+                <span
+                  className={
+                    document.status === 'VERIFIED'
+                      ? 'status-verified'
+                      : document.status === 'MODIFIED'
+                        ? 'status-modified'
+                        : 'status-uploaded'
+                  }
+                >
+                  Status: {document.status || 'UPLOADED'}
+                </span>
+
               </div>
             )}
+
           </div>
 
           <div className="trust-card">
+
             <p>TRUST SCORE</p>
-            <div className="score">--</div>
-            <span>Awaiting document analysis</span>
+
+            <div className="score">
+              --
+            </div>
+
+            <span>
+              Awaiting document analysis
+            </span>
+
           </div>
+
         </section>
 
         <section className="stats">
+
           <div className="stat-card">
-          <span>Documents Analyzed</span>
-          <strong>{documents.length}</strong>
+            <span>
+              Documents Analyzed
+            </span>
+
+            <strong>
+              {documents.length}
+            </strong>
           </div>
 
           <div className="stat-card">
-            <span>Potentially Modified</span>
-            <strong>0</strong>
+            <span>
+              Potentially Modified
+            </span>
+
+            <strong>
+              {
+                documents.filter(
+                  (doc) => doc.status === 'MODIFIED'
+                ).length
+              }
+            </strong>
           </div>
+
+          <div className="stat-card">
+            <span>
+              Verified Documents
+            </span>
+
+            <strong>
+              {
+                documents.filter(
+                  (doc) => doc.status === 'VERIFIED'
+                ).length
+              }
+            </strong>
+          </div>
+
         </section>
 
         <section className="recent">
+
           <div className="section-header">
-            <h2>Recent Documents</h2>
-            <span>View All</span>
+
+            <h2>
+              Recent Documents
+            </h2>
+
+            <span>
+              View All
+            </span>
+
           </div>
 
           {documents.length === 0 ? (
-  <div className="empty-state">
-    <h3>No documents analyzed yet</h3>
-    <p>
-      Upload your first document to begin integrity analysis.
-    </p>
-  </div>
-) : (
-  <div className="document-list">
-    {documents.map((doc) => (
-      <div className="document-item" key={doc.id}>
-        <strong>{doc.filename}</strong>
-        <span>{doc.fileType}</span>
-        <span>SHA-256: {doc.sha256Hash}</span>
-       <span
-       className={
-       doc.status === 'VERIFIED'
-       ? 'status-verified'
-       : doc.status === 'MODIFIED'
-       ? 'status-modified'
-       : 'status-uploaded'
-  }
->
-  Status: {doc.status || 'UPLOADED'}
-</span>
-       <button
-       onClick={async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/api/documents/${doc.id}/verify`
-      )
 
-      console.log(response.data)
+            <div className="empty-state">
 
-      const updated = await axios.get(
-        `http://localhost:8080/api/documents/${doc.id}`
-      )
+              <h3>
+                No documents analyzed yet
+              </h3>
 
-      setDocuments((prev) =>
-        prev.map((item) =>
-          item.id === doc.id ? updated.data : item
-        )
-      )
-    } catch (error) {
-      console.error('Verification failed:', error)
-    }
-    }}
->
-  Verify
-</button>
-      </div>
-    ))}
-  </div>
-)}
+              <p>
+                Upload your first document to begin integrity analysis.
+              </p>
+
+            </div>
+
+          ) : (
+
+            <div className="document-list">
+
+              {documents.map((doc) => (
+
+                <div
+                  className="document-item"
+                  key={doc.id}
+                >
+
+                  <strong>
+                    {doc.filename}
+                  </strong>
+
+                  <span>
+                    {doc.fileType}
+                  </span>
+
+                  <span>
+                    SHA-256: {doc.sha256Hash}
+                  </span>
+
+                  <span
+                    className={
+                      doc.status === 'VERIFIED'
+                        ? 'status-verified'
+                        : doc.status === 'MODIFIED'
+                          ? 'status-modified'
+                          : 'status-uploaded'
+                    }
+                  >
+                    Status: {doc.status || 'UPLOADED'}
+                  </span>
+
+                  <button
+                    onClick={() => handleVerify(doc.id)}
+                  >
+                    Verify
+                  </button>
+
+                  {doc.status === 'VERIFIED' && (
+
+                    <div className="verification-result verified-result">
+                      Document integrity verified. No changes detected.
+                    </div>
+
+                  )}
+
+                  {doc.status === 'MODIFIED' && (
+
+                    <div className="verification-result modified-result">
+                      Possible modification detected. File contents have changed.
+                    </div>
+
+                  )}
+
+                </div>
+
+              ))}
+
+            </div>
+
+          )}
+
         </section>
+
       </main>
+
     </div>
   )
 }

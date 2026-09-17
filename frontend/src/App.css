@@ -269,3 +269,22 @@ nav a:hover {
 .document-item button:hover {
   opacity: 0.85;
 }
+.verification-result {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.verified-result {
+  border: 1px solid #245c3a;
+  background: #102218;
+  color: #4ade80;
+}
+
+.modified-result {
+  border: 1px solid #6b3030;
+  background: #241414;
+  color: #f87171;
+}
