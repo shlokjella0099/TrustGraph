@@ -265,6 +265,9 @@ function App() {
                   <span>
                     {doc.fileType}
                   </span>
+                  <span>
+                  Size: {(doc.fileSize / 1024).toFixed(2)} KB
+                  </span>
 
                   <span>
                     SHA-256: {doc.sha256Hash}
