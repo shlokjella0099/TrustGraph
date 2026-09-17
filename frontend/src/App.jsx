@@ -167,45 +167,57 @@ function App() {
 
         <section className="stats">
 
-          <div className="stat-card">
-            <span>
-              Documents Analyzed
-            </span>
+  <div className="stat-card">
+    <span>
+      Documents Uploaded
+    </span>
 
-            <strong>
-              {documents.length}
-            </strong>
-          </div>
+    <strong>
+      {documents.length}
+    </strong>
 
-          <div className="stat-card">
-            <span>
-              Potentially Modified
-            </span>
+    <small>
+      Total documents stored
+    </small>
+  </div>
 
-            <strong>
-              {
-                documents.filter(
-                  (doc) => doc.status === 'MODIFIED'
-                ).length
-              }
-            </strong>
-          </div>
+  <div className="stat-card">
+    <span>
+      Verified Documents
+    </span>
 
-          <div className="stat-card">
-            <span>
-              Verified Documents
-            </span>
+    <strong>
+      {
+        documents.filter(
+          (doc) => doc.status === 'VERIFIED'
+        ).length
+      }
+    </strong>
 
-            <strong>
-              {
-                documents.filter(
-                  (doc) => doc.status === 'VERIFIED'
-                ).length
-              }
-            </strong>
-          </div>
+    <small>
+      Integrity checks passed
+    </small>
+  </div>
 
-        </section>
+  <div className="stat-card">
+    <span>
+      Potentially Modified
+    </span>
+
+    <strong>
+      {
+        documents.filter(
+          (doc) => doc.status === 'MODIFIED'
+        ).length
+      }
+    </strong>
+
+    <small>
+      Requires further review
+    </small>
+  </div>
+
+</section>
 
         <section className="recent">
 
